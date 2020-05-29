@@ -1,12 +1,23 @@
 ---
 version: '2'
 services:
-  app:
-    image: docker.io/library/demo:0.0.1-SNAPSHOT
-    hostname: app
-    container_name: app
+  #  app:
+  #    image: docker.io/library/demo:0.0.1-SNAPSHOT
+  #    hostname: app
+  #    container_name: app
+  #    ports:
+  #      - 8080:8080
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    hostname: db
+    container_name: db
     ports:
-      - 8080:8080
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: ${ACCEPT_EULA}
+      SA_PASSWORD: ${SA_PASSWORD}
+      MSSQL_PID: ${MSSQL_PID}
+
   zookeeper:
     image: ${REPOSITORY}/cp-zookeeper:${CONFLUENT_DOCKER_TAG}
     hostname: zookeeper
