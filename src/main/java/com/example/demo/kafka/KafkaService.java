@@ -22,10 +22,10 @@ public class KafkaService {
   public void send() throws InterruptedException {
     int y = 1;
     for (int i = 0; i < 100; i++) {
-      this.template.send("myTopic", "key" + y, "foo" + y);
+      template.send("myTopic", "key" + y, "foo" + y);
       y++;
     }
-    latch.await(60, TimeUnit.SECONDS);
-    logger.info("All received");
+    logger.info("All sent");
+    latch.await(10, TimeUnit.SECONDS);
   }
 }
