@@ -23,7 +23,7 @@ public class UserRepositoryTest {
 
   @ClassRule
   public static MSSQLServerContainer mssqlserver =
-          new MSSQLServerContainer("mcr.microsoft.com/mssql/server:2017-latest-ubuntu");
+          new MSSQLServerContainer("mcr.microsoft.com/mssql/server:2019-CU4-ubuntu-16.04");
 
   @Autowired
   private UserRepository userRepository;
@@ -43,7 +43,7 @@ public class UserRepositoryTest {
     User userA = userRepository.findByName("Bob");
     assertNotNull(userA);
     assertEquals(38, userA.getAge());
-    /*Get all products, list should only have two*/
+    /*Get all users, list should only have two*/
     final Iterable<User> users = userRepository.findAll();
     int count = 0;
     for (User user : users) {

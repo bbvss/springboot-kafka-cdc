@@ -13,7 +13,7 @@ public class DatabaseController {
   }
 
   @GetMapping("/insert")
-  public String hello() {
+  public String insert() {
     databaseService.insert();
     return String.format("Count users %s", databaseService.count());
   }

@@ -14,7 +14,7 @@ public class DatabaseService {
   }
 
   public void insert() {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
       User user = new User("name " + i, 33 + i);
       userRepository.save(user);
     }
