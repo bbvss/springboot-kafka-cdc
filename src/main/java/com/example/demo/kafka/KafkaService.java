@@ -21,8 +21,8 @@ public class KafkaService {
 
   public void send() throws InterruptedException {
     int y = 1;
-    for (int i = 0; i < 100; i++) {
-      template.send("myTopic", "key" + y, "foo" + y);
+    for (int i = 0; i < 1000000; i++) {
+      template.send("myTopic", "key1" + y, "foo1" + y);
       y++;
     }
     logger.info("All sent");

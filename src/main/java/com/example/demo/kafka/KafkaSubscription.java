@@ -16,14 +16,25 @@ public class KafkaSubscription {
   private static final Logger logger = LoggerFactory.getLogger(KafkaSubscription.class);
   private final CountDownLatch latch = new CountDownLatch(3);
 
-  @KafkaListener(
+  @KafkaListener(groupId = "myTopic",
           topicPartitions = {
                   @TopicPartition(
                           topic = "myTopic",
                           partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
           })
-  public void listen(ConsumerRecord<?, ?> cr) {
-    logger.info("{}", cr);
+  public void listenMyTopic(ConsumerRecord<?, ?> cr) {
+    logger.info("MyTopic {}", cr);
+    latch.countDown();
+  }
+
+  @KafkaListener(groupId = "customers",
+          topicPartitions = {
+                  @TopicPartition(
+                          topic = "server1.dbo.customers",
+                          partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
+          })
+  public void listenCDC(ConsumerRecord<?, ?> cr) {
+    logger.info("CDC {}", cr);
     latch.countDown();
   }
 }

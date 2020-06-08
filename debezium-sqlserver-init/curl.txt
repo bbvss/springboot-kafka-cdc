@@ -1,0 +1,11 @@
+cat debezium-sqlserver-init/create.sql | docker exec -i spring-kafka-cdc_sqlserver_1 bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
+
+cat debezium-sqlserver-init/insert.sql | docker exec -i spring-kafka-cdc_sqlserver_1 bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
+
+curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @debezium-sqlserver-init/register-sqlserver.json
+
+docker-compose -f docker-compose-debezium-mssql.yml exec kafka /kafka/bin/kafka-console-consumer.sh \
+    --bootstrap-server kafka:9092 \
+    --from-beginning \
+    --property print.key=true \
+    --topic server1.dbo.customers

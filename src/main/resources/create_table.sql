@@ -1,6 +1,5 @@
 -- USE master
-drop database if exists springbootdb
+-- drop database if exists testDB
 
-create database springbootdb
-
-USE springbootdb
+create database testDB
+USE testDB

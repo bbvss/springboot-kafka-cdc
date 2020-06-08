@@ -29,8 +29,12 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
-	testImplementation "org.testcontainers:mssqlserver:1.14.2"
-	testImplementation "org.testcontainers:kafka:1.14.3"
+	testImplementation 'org.testcontainers:mssqlserver:1.14.2'
+	testImplementation 'org.testcontainers:kafka:1.14.3'
+	// https://mvnrepository.com/artifact/io.debezium/debezium-testing-testcontainers
+	testImplementation group: 'io.debezium', name: 'debezium-testing-testcontainers', version: '1.1.2.Final'
+	testImplementation 'org.testcontainers:postgresql:1.14.3'
+
 }
 
 test {
