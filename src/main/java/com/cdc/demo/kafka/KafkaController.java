@@ -1,6 +1,7 @@
-package com.example.demo.kafka;
+package com.cdc.demo.kafka;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -13,9 +14,9 @@ public class KafkaController {
   }
 
   @GetMapping("/send-messages")
-  public void sendMessages() {
+  public void sendMessages(@RequestParam int count) {
     try {
-      kafkaService.send();
+      kafkaService.send(count);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }

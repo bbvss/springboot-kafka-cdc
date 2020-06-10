@@ -28,7 +28,7 @@ CREATE TABLE customers
     id         INTEGER IDENTITY (1001,1) NOT NULL PRIMARY KEY,
     first_name VARCHAR(255)              NOT NULL,
     last_name  VARCHAR(255)              NOT NULL,
-    email      VARCHAR(255)              NOT NULL UNIQUE
+    email VARCHAR(255) NOT NULL
 );
 EXEC sys.sp_cdc_enable_table @source_schema = 'dbo', @source_name = 'customers', @role_name = NULL,
      @supports_net_changes = 0;

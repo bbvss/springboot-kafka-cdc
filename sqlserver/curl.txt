@@ -1,0 +1,17 @@
+// create tables and enable cdc
+cat sqlserver/create.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
+
+// register connector
+curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @sqlserver/register-connector.json
+
+// create topics: server1.dbo.customers is necessary for the stream
+docker-compose exec kafka kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1o --topic server1.dbo.customers
+
+// start KafkaApplication
+....
+
+// insert data
+cat sqlserver/insert.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
+
+// consumer in console
+docker-compose exec kafka "/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --from-beginning --property print.key=true --topic server1.dbo.customers"

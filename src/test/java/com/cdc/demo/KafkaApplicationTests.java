@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.cdc.demo;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;

@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   zookeeper:
-    image: ${REPOSITORY}/cp-zookeeper:${CONFLUENT_DOCKER_TAG}
+    image: confluentinc/cp-zookeeper:${CONFLUENT_DOCKER_TAG}
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -11,8 +11,9 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+
   kafka:
-    image: ${REPOSITORY}/cp-kafka:${CONFLUENT_DOCKER_TAG}
+    image: confluentinc/cp-kafka:${CONFLUENT_DOCKER_TAG}
     hostname: kafka
     container_name: kafka
     ports:
@@ -29,8 +30,11 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-CU4-ubuntu-16.04
+    image: mcr.microsoft.com/mssql/server:${MSSQL_DOCKER_VERSION}
+    hostname: sqlserver
+    container_name: sqlserver
     ports:
       - 1433:1433
     environment:
@@ -38,16 +42,19 @@ services:
       SA_PASSWORD: ${SA_PASSWORD}
       MSSQL_PID: ${MSSQL_PID}
       MSSQL_AGENT_ENABLED: ${MSSQL_AGENT_ENABLED}
+
   connect:
-    image: debezium/connect:${DEBEZIUM_VERSION}
+    image: debezium/connect:${DEBEZIUM_CONNECT_DOCKER_VERSION}
+    hostname: connect
+    container_name: connect
     ports:
       - 8083:8083
-    links:
+    depends_on:
       - kafka
       - sqlserver
     environment:
-      - BOOTSTRAP_SERVERS=kafka:29092
-      - GROUP_ID=1
-      - CONFIG_STORAGE_TOPIC=my_connect_configs
-      - OFFSET_STORAGE_TOPIC=my_connect_offsets
-      - STATUS_STORAGE_TOPIC=my_connect_statuses
+      BOOTSTRAP_SERVERS: kafka:29092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: my_connect_configs
+      OFFSET_STORAGE_TOPIC: my_connect_offsets
+      STATUS_STORAGE_TOPIC: my_connect_statuses

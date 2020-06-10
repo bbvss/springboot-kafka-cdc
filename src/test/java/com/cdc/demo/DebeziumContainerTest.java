@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.cdc.demo;
 
 import com.jayway.jsonpath.JsonPath;
 import io.debezium.testing.testcontainers.ConnectorConfiguration;
