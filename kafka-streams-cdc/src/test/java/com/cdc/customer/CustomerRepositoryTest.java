@@ -11,6 +11,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.MSSQLServerContainer;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
@@ -28,8 +30,8 @@ public class CustomerRepositoryTest {
 
     @Test
     public void testCustomerRepository() {
-        Customer customer1 = new Customer("Luis", "Trenker", "luis.trenker@kafka.ch");
-        Customer customer2 = new Customer("Sepp", "Forcher", "sepp.forcher@kafka.ch");
+        Customer customer1 = new Customer(UUID.randomUUID(), "Luis", "Trenker", "luis.trenker@kafka.ch");
+        Customer customer2 = new Customer(UUID.randomUUID(), "Sepp", "Forcher", "sepp.forcher@kafka.ch");
         // save user, verify has ID value after save
         assertNull(customer1.getId());
         assertNull(customer2.getId()); // null before save
