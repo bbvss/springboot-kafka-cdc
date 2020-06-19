@@ -26,13 +26,12 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// TODO make green, working with docker compose
 class KafkaApplicationTests {
 
   public static Logger logger = LoggerFactory.getLogger(KafkaApplicationTests.class);
 
   @ClassRule
-  public static KafkaContainer kafka = new KafkaContainer("latest");
+  public static KafkaContainer kafka = new KafkaContainer("latest").withExposedPorts(9092, 9093);
 
   @Test
   public void testAutoCommit() throws Exception {

@@ -1,4 +1,4 @@
-package com.example;
+package com.values;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;

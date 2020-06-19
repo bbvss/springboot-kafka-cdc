@@ -7,7 +7,7 @@ curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json"
 // insert data
 cat kafka-streams-cdc/sqlserver/insert.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
 
-// create topics: server1.dbo.customers if necessary for the stream
+// optional: create topics: server1.dbo.customers if necessary for the stream
 docker-compose exec kafka kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1o --topic server1.dbo.customers
 
 // start KafkaApplication

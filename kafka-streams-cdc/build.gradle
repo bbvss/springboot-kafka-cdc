@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.example'
+group = 'com.cdc'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
@@ -21,31 +21,24 @@ dependencies {
     implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.5.1.RELEASE'
     // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-stream-kafka
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-stream-kafka', version: '3.0.5.RELEASE'
-    // https://mvnrepository.com/artifact/org.springframework/spring-webflux
-    implementation group: 'org.springframework', name: 'spring-webflux', version: '5.2.7.RELEASE'
 
     // https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams KStreams
     implementation group: 'org.apache.kafka', name: 'kafka-streams', version: '2.5.0'
-    // https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients KStreamBuilder
-    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '2.5.0'
-
     // https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc
     implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '8.3.0.jre14-preview'
     implementation 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
-
-
+// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.3.1.RELEASE'
 
 // test
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.testcontainers:mssqlserver:1.14.2'
     testImplementation 'org.testcontainers:kafka:1.14.3'
     // https://mvnrepository.com/artifact/io.debezium/debezium-testing-testcontainers
     testImplementation group: 'io.debezium', name: 'debezium-testing-testcontainers', version: '1.1.2.Final'
-    testImplementation 'org.testcontainers:postgresql:1.14.3'
 
 
 }

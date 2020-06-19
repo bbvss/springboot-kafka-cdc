@@ -1,4 +1,4 @@
-package com.example;
+package com.values;
 
 import io.quarkus.test.junit.NativeImageTest;
 

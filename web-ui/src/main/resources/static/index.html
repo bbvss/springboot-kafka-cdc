@@ -17,11 +17,12 @@
 
 <body>
 <script>
-    var source = new EventSource("customers");
+    var source = new EventSource("http://localhost:8080/customers");
     source.onmessage = function (event) {
         let data = JSON.parse(event.data);
-        document.getElementById("uuid").innerHTML = data.setup;
-        document.getElementById("firstName").innerHTML = data.punchline;
+        for (let dataKey in data) {
+            $("ul").append("<li>" + data.uuid + " " + data.firstName + "</li>")
+        }
     };
 </script>
 <!-- Navigation -->
@@ -46,12 +47,13 @@
             <h1 class="mt-5">Customer of this moment!</h1>
             <p class="lead">This site will get you a new customer every 3 seconds using Server sent events!</p>
             <div class="card text-left mt-5">
-                <div class="card-header" id="qn">
-                    Joke Qn
+                <div class="card-header">
+                    <!--                    <ul id="uuid"></ul>-->
+                    <!--                    <textarea id="uuid">Joke Qn</textarea>-->
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item" id="ans">Joke Ans</li>
-                </ul>
+                <!--                <ul class="list-group list-group-flush">-->
+                <!--                    <li class="list-group-item" id="firstName">Joke Ans</li>-->
+                <!--                </ul>-->
             </div>
         </div>
     </div>

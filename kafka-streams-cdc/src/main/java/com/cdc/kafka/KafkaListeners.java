@@ -24,10 +24,10 @@ public class KafkaListeners {
         latch.countDown();
     }
 
-
     @KafkaListener(id = "orderGroup", /*groupId = "orders",*/ topics = Topics.SERVER_1_DBO_ORDERS)
-    public void listenCDC(ConsumerRecord<?, ?> cr) {
-        logger.info("CDC {} {}", Topics.SERVER_1_DBO_ORDERS, cr);
+    public void listenOrdersCDC(ConsumerRecord<?, ?> cr) {
+        logger.info("CDC Order {} {}", Topics.SERVER_1_DBO_ORDERS, cr);
         latch.countDown();
     }
+
 }
