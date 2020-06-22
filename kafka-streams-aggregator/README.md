@@ -23,6 +23,10 @@ The application is now runnable using `java -jar target/kafka-streams-aggregator
 
 You can create a native executable using: `./mvnw package -Pnative`.
 
+or 
+`export HOSTNAME=localhost` 
+`mvnw clean package -f pom.xml -Pnative -Dnative-image.container-runtime=docker`
+
 Or, if you don't have GraalVM installed, you can run the native executable build in a container using: `./mvnw package -Pnative -Dquarkus.native.container-build=true`.
 
 You can then execute your native executable with: `./target/kafka-streams-aggregator-1.0-SNAPSHOT-runner`

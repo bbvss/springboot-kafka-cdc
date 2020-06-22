@@ -21,40 +21,17 @@
     source.onmessage = function (event) {
         let data = JSON.parse(event.data);
         for (let dataKey in data) {
-            $("ul").append("<li>" + data.uuid + " " + data.firstName + "</li>")
+            // $("ul").append("<li>" + data.uuid + " " + data.firstName + " " + data.lastName + " " + data.email + "</li>")
+            "<p>" + data.uuid + " " + data.firstName + " " + data.lastName + " " + data.email + "</p>"
         }
     };
 </script>
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-    <div class="container">
-        <a class="navbar-brand" href="#">Customers App</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-            </ul>
-        </div>
-    </div>
-</nav>
 
 <!-- Page Content -->
 <div class="container">
-    <div class="row">
-        <div class="col-lg-12 text-center">
-            <h1 class="mt-5">Customer of this moment!</h1>
-            <p class="lead">This site will get you a new customer every 3 seconds using Server sent events!</p>
-            <div class="card text-left mt-5">
-                <div class="card-header">
-                    <!--                    <ul id="uuid"></ul>-->
-                    <!--                    <textarea id="uuid">Joke Qn</textarea>-->
-                </div>
-                <!--                <ul class="list-group list-group-flush">-->
-                <!--                    <li class="list-group-item" id="firstName">Joke Ans</li>-->
-                <!--                </ul>-->
-            </div>
+    <div class="card text-left mt-5">
+        <div class="card-header">
+            <ul id="uuid"></ul>
         </div>
     </div>
 </div>
