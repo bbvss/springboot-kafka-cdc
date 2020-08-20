@@ -25,7 +25,7 @@ You can create a native executable using: `./mvnw package -Pnative`.
 
 or 
 `export HOSTNAME=localhost` 
-`mvnw clean package -f pom.xml -Pnative -Dnative-image.container-runtime=docker`
+`./mvnw clean package -f pom.xml -Pnative -Dnative-image.container-runtime=docker`
 
 Or, if you don't have GraalVM installed, you can run the native executable build in a container using: `./mvnw package -Pnative -Dquarkus.native.container-build=true`.
 

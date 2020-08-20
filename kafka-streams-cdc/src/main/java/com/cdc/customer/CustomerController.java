@@ -3,8 +3,10 @@ package com.cdc.customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -19,16 +21,7 @@ public class CustomerController {
         this.bridge = createBridge().publish().autoConnect().cache(10).log();
     }
 
-    @RequestMapping("/")
-    public String index(final Model model) {
-        // loads 1 and display 1, stream data, data driven mode.
-        model.addAttribute("movies", bridge);
-        // classic, wait repository loaded all and display it.
-        //model.addAttribute("movies", movieRepository.findAll());
-        return "index";
-    }
-
-    @GetMapping("/insert")
+    @GetMapping("/customers/insert")
     public String insert(@RequestParam int count) {
         customerService.insert(count);
         return String.format("Count users %s", customerService.count());

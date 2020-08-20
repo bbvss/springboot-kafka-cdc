@@ -1,6 +1,30 @@
 version: '3.8'
 
 services:
+  # Quarkus
+  producer:
+    image: docker.io/library/kafka-streams-producer:0.0.1-SNAPSHOT
+    build:
+      context: kafka-streams-producer
+      dockerfile: ./src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
+    hostname: kafka-streams-producer
+    container_name: kafka-streams-producer
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+  # Quarkus
+  aggregator:
+    image: docker.io/library/kafka-streams-aggregator:0.0.1-SNAPSHOT
+    build:
+      context: kafka-streams-aggregator
+      dockerfile: ./src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
+    hostname: kafka-streams-aggregator
+    container_name: kafka-streams-aggregator
+    depends_on:
+      - kafka
+    environment:
+      QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: kafka:29092
 
   zookeeper:
     image: confluentinc/cp-zookeeper:${CONFLUENT_DOCKER_TAG}

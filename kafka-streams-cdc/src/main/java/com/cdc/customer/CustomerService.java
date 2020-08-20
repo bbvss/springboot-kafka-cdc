@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.UUID;
 
 @Service
@@ -68,5 +70,10 @@ public class CustomerService {
 
   public long count() {
     return customerRepository.count();
+  }
+
+  public Flux<Customer> countAll() {
+    //Simulate big list of data, streaming it every 2 second delay
+    return Flux.fromIterable(customerRepository.findAll()).delayElements(Duration.ofSeconds(2));
   }
 }
