@@ -1,65 +1,59 @@
 package com.cdc.customer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 public class CustomerController {
 
-    private final Logger logger = LoggerFactory.getLogger(CustomerController.class);
-    private final CustomerService customerService;
-    private final Flux<CustomerDto> bridge;
+  private final CustomerService customerService;
 
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-        this.bridge = createBridge().publish().autoConnect().cache(10).log();
-    }
+  public CustomerController(CustomerService customerService) {
+    this.customerService = customerService;
+  }
 
-    @GetMapping("/customers/insert")
-    public String insert(@RequestParam int count) {
-        customerService.insert(count);
-        return String.format("Count users %s", customerService.count());
-    }
+  @GetMapping("/customers/insert")
+  public String insert(@RequestParam int count) {
+    customerService.insert(count);
+    return String.format("Count users %s", customerService.count());
+  }
 
-    @CrossOrigin(origins = {"http://localhost:8081", "http://localhost:8080"})
-    @GetMapping(value = "/customers", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<CustomerDto> getCustomers() {
-        return bridge;
-        //    Random r = new Random();
-        //    int low = 0;
-        //    int high = 50;
-        //    return Flux.fromStream(
-        //            Stream.generate(() -> r.nextInt(high - low) + low)
-        //                .map(s -> String.valueOf(s))
-        //                .peek(
-        //                    (msg) -> {
-        //                      logger.info(msg);
-        //                    }))
-        //        .map(s -> Integer.valueOf(s))
-        //        .delayElements(Duration.ofSeconds(1));
-    }
+  @PostMapping("/customers")
+  public CustomerDto insert(@RequestBody CustomerDto dto) {
+    return mapTo(customerService.insert(mapFrom(dto)));
+  }
 
-    private Flux<CustomerDto> createBridge() {
-        return Flux.create(
-                sink -> { // (2)
-                    customerService.register(
-                            new CustomerEventListener() {
-                                @Override
-                                public void processComplete() {
-                                    sink.complete();
-                                }
+  @PutMapping("/customers/{id}")
+  public CustomerDto put(@RequestBody CustomerDto dto, @PathVariable Integer id) {
+    return mapTo(
+            customerService
+                    .findById(id)
+                    .map(customer -> customerService.update(map(dto, customer)))
+                    .orElseGet(() -> customerService.insert(mapFrom(dto))));
+  }
 
-                                @Override
-                                public void onData(CustomerDto data) {
-                                    sink.next(data);
-                                }
-                            });
-                });
-    }
+  private Customer map(CustomerDto dto, Customer customer) {
+    customer.setFirstName(dto.getFirstName());
+    customer.setLastName(dto.getLastName());
+    customer.setEmail(dto.getEmail());
+    return customer;
+  }
+
+  @DeleteMapping("/customers/{id}")
+  public void delete(@PathVariable Integer id) {
+    customerService.delete(id);
+  }
+
+  private CustomerDto mapTo(Customer insert) {
+    return new CustomerDto(
+            insert.getUuid().toString(),
+            insert.getFirstName(),
+            insert.getLastName(),
+            insert.getEmail());
+  }
+
+  private Customer mapFrom(CustomerDto dto) {
+    return new Customer(UUID.randomUUID(), dto.getFirstName(), dto.getLastName(), dto.getEmail());
+  }
 }

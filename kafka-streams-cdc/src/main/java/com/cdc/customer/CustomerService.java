@@ -1,24 +1,15 @@
 package com.cdc.customer;
 
-import com.cdc.Topics;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class CustomerService {
-  private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
   private final CustomerRepository customerRepository;
-  private final ObjectMapper objectMapper = new ObjectMapper();
   private CustomerEventListener listener;
 
   public CustomerService(CustomerRepository customerRepository) {
@@ -49,31 +40,37 @@ public class CustomerService {
     }
   }
 
-  @KafkaListener(
-          id = "customerGroup", /*groupId = "orders",*/
-          topics = Topics.SERVER_1_DBO_CUSTOMERS)
-  public void listenCustomersCDC(ConsumerRecord<?, ?> cr) throws JsonProcessingException {
-    final JsonNode after = objectMapper.readTree(cr.value().toString()).get("payload").get("after");
-    logger.info(String.format("after = %s", after));
-    final String uuid = after.get("uuid").asText();
-    final String firstName = after.get("first_name").asText();
-    final String lastName = after.get("last_name").asText();
-    final String email = after.get("email").asText();
-    onEvent(
-            CustomerDto.builder()
-                    .uuid(uuid)
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .email(email)
-                    .build());
-  }
-
   public long count() {
     return customerRepository.count();
   }
 
   public Flux<Customer> countAll() {
-    //Simulate big list of data, streaming it every 2 second delay
+    // Simulate big list of data, streaming it every 2 second delay
     return Flux.fromIterable(customerRepository.findAll()).delayElements(Duration.ofSeconds(2));
   }
+
+  public void delete(Integer id) {
+    customerRepository.deleteById(id);
+  }
+
+  public Customer insert(Customer customer) {
+    return customerRepository.save(customer);
+  }
+
+  public Customer update(Customer customer) {
+    return customerRepository.save(customer);
+  }
+
+  public Optional<Customer> findById(Integer id) {
+    return customerRepository.findById(id);
+  }
+
+  // FLUX
+  //      onEvent(
+  //              CustomerDto.builder()
+  //                      .uuid(uuid)
+  //                      .firstName(firstName)
+  //                      .lastName(lastName)
+  //                      .email(email)
+  //                      .build());
 }
