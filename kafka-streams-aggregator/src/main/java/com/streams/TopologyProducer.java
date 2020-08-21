@@ -37,28 +37,28 @@ public class TopologyProducer {
     KeyValueBytesStoreSupplier storeSupplier =
             Stores.persistentKeyValueStore(WEATHER_STATIONS_STORE);
 
-    GlobalKTable<Integer, WeatherStation> stations =
-            builder.globalTable(
-                    WEATHER_STATIONS_TOPIC, Consumed.with(Serdes.Integer(), weatherStationSerde));
+      GlobalKTable<Integer, WeatherStation> stations =
+              builder.globalTable(
+                      WEATHER_STATIONS_TOPIC, Consumed.with(Serdes.Integer(), weatherStationSerde));
 
-    builder.stream(TEMPERATURE_VALUES_TOPIC, Consumed.with(Serdes.Integer(), Serdes.String()))
-            .join(
-                    stations,
-                    (stationId, timestampAndValue) -> stationId,
-                    (timestampAndValue, station) -> {
-                      String[] parts = timestampAndValue.split(";");
-                      return new TemperatureMeasurement(
-                              station.id, station.name, Instant.parse(parts[0]), Double.parseDouble(parts[1]));
-                    })
-            .groupByKey()
-            .aggregate(
-                    Aggregation::new,
-                    (stationId, value, aggregation) -> aggregation.updateFrom(value),
-                    Materialized.<Integer, Aggregation>as(storeSupplier)
-                            .withKeySerde(Serdes.Integer())
-                            .withValueSerde(aggregationSerde))
-            .toStream()
-            .to(TEMPERATURES_AGGREGATED_TOPIC, Produced.with(Serdes.Integer(), aggregationSerde));
+      builder.stream(TEMPERATURE_VALUES_TOPIC, Consumed.with(Serdes.Integer(), Serdes.String()))
+              .join(
+                      stations,
+                      (stationId, timestampAndValue) -> stationId,
+                      (timestampAndValue, station) -> {
+                          String[] parts = timestampAndValue.split(";");
+                          return new TemperatureMeasurement(
+                                  station.id, station.name, Instant.parse(parts[0]), Double.parseDouble(parts[1]));
+                      })
+              .groupByKey()
+              .aggregate(
+                      Aggregation::new,
+                      (stationId, value, aggregation) -> aggregation.updateFrom(value),
+                      Materialized.<Integer, Aggregation>as(storeSupplier)
+                              .withKeySerde(Serdes.Integer())
+                              .withValueSerde(aggregationSerde))
+              .toStream()
+              .to(TEMPERATURES_AGGREGATED_TOPIC, Produced.with(Serdes.Integer(), aggregationSerde));
 
     return builder.build();
   }

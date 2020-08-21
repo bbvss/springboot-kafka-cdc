@@ -1,7 +1,10 @@
 // start docker-compose.yml
 
-// create tables and enable CDC
+// create tables
 cat kafka-streams-cdc/sqlserver/create.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
+
+// enable CDC
+cat kafka-streams-cdc/sqlserver/enable-cdc.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
 
 // insert data
 cat kafka-streams-cdc/sqlserver/insert.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
@@ -33,7 +36,15 @@ sh kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning 
 http://localhost:8080/send-messages?count=1000000
 
 
-//docker-compose exec kafka "/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --from-beginning --property print.key=true --topic server1.dbo.customers"
 
 // kafka Development/Kafka/kafka-2.4.0-src/bin
 sh kafka-topics.sh --bootstrap-server localhost:9092 --list
+
+// weather-stations browser
+http://localhost:8089/weather-stations/data/1
+// consumer temperature-values
+sh kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --property print.key=true --topic temperature-values
+
+
+not working:
+//docker-compose exec kafka "/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --from-beginning --property print.key=true --topic server1.dbo.customers"

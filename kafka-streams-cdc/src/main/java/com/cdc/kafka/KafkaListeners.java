@@ -38,9 +38,11 @@ public class KafkaListeners {
           id = "customerGroup", /*groupId = "orders",*/
           topics = Topics.SERVER_1_DBO_CUSTOMERS)
   public void listenCustomersCDC(ConsumerRecord<?, ?> cr) throws JsonProcessingException {
-    final JsonNode payload = objectMapper.readTree(cr.value().toString()).get("payload");
-    if (payload != null) {
-      logger.info(String.format("CDC Customer: payload = %s", payload));
+    if (cr != null && cr.value() != null) {
+      final JsonNode payload = objectMapper.readTree(cr.value().toString()).get("payload");
+      if (payload != null) {
+        logger.info(String.format("CONSUMER Customers from CDC: payload = %s%n", payload));
+      }
     }
   }
 }

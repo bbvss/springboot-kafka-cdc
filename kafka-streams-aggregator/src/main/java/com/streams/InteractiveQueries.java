@@ -21,65 +21,65 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class InteractiveQueries {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InteractiveQueries.class);
+  private static final Logger LOG = LoggerFactory.getLogger(InteractiveQueries.class);
 
-    @ConfigProperty(name = "hostname")
-    String host;
+  @ConfigProperty(name = "hostname")
+  String host;
 
-    @Inject
-    KafkaStreams streams;
+  @Inject
+  KafkaStreams streams;
 
-    public GetWeatherStationDataResult getWeatherStationData(int id) {
+  public GetWeatherStationDataResult getWeatherStationData(int id) {
 
-        final KeyQueryMetadata keyQueryMetadata =
-                streams.queryMetadataForKey(
-                        TopologyProducer.WEATHER_STATIONS_STORE, id, Serdes.Integer().serializer());
+    final KeyQueryMetadata keyQueryMetadata =
+            streams.queryMetadataForKey(
+                    TopologyProducer.WEATHER_STATIONS_STORE, id, Serdes.Integer().serializer());
 
-        if (keyQueryMetadata == null || keyQueryMetadata == KeyQueryMetadata.NOT_AVAILABLE) {
-            LOG.warn("Found no metadata for key {}", id);
-            return GetWeatherStationDataResult.notFound();
-        } else if (keyQueryMetadata.getActiveHost().host().equals(host)) {
-            LOG.info("Found data for key {} locally", id);
-            Aggregation result = getWeatherStationStore().get(id);
+    if (keyQueryMetadata == null || keyQueryMetadata == KeyQueryMetadata.NOT_AVAILABLE) {
+      LOG.warn("Found no metadata for key {}", id);
+      return GetWeatherStationDataResult.notFound();
+    } else if (keyQueryMetadata.getActiveHost().host().equals(host)) {
+      LOG.info("Found data for key {} locally", id);
+      Aggregation result = getWeatherStationStore().get(id);
 
-            if (result != null) {
-                return GetWeatherStationDataResult.found(WeatherStationData.from(result));
-            } else {
-                return GetWeatherStationDataResult.notFound();
-            }
-        } else {
-            LOG.info(
-                    "Found data for key {} on remote host {}:{}",
-                    id,
-                    keyQueryMetadata.getActiveHost().host(),
-                    keyQueryMetadata.getActiveHost().port());
-            return GetWeatherStationDataResult.foundRemotely(
-                    keyQueryMetadata.getActiveHost().host(), keyQueryMetadata.getActiveHost().port());
-        }
+      if (result != null) {
+        return GetWeatherStationDataResult.found(WeatherStationData.from(result));
+      } else {
+        return GetWeatherStationDataResult.notFound();
+      }
+    } else {
+      LOG.info(
+              "Found data for key {} on remote host {}:{}",
+              id,
+              keyQueryMetadata.getActiveHost().host(),
+              keyQueryMetadata.getActiveHost().port());
+      return GetWeatherStationDataResult.foundRemotely(
+              keyQueryMetadata.getActiveHost().host(), keyQueryMetadata.getActiveHost().port());
     }
+  }
 
-    public List<PipelineMetadata> getMetaData() {
-        return streams.allMetadataForStore(TopologyProducer.WEATHER_STATIONS_STORE).stream()
-                .map(
-                        m ->
-                                new PipelineMetadata(
-                                        m.hostInfo().host() + ":" + m.hostInfo().port(),
-                                        m.topicPartitions().stream()
-                                                .map(TopicPartition::toString)
-                                                .collect(Collectors.toSet())))
-                .collect(Collectors.toList());
-    }
+  public List<PipelineMetadata> getMetaData() {
+    return streams.allMetadataForStore(TopologyProducer.WEATHER_STATIONS_STORE).stream()
+            .map(
+                    m ->
+                            new PipelineMetadata(
+                                    m.hostInfo().host() + ":" + m.hostInfo().port(),
+                                    m.topicPartitions().stream()
+                                            .map(TopicPartition::toString)
+                                            .collect(Collectors.toSet())))
+            .collect(Collectors.toList());
+  }
 
-    private ReadOnlyKeyValueStore<Integer, Aggregation> getWeatherStationStore() {
-        while (true) {
-            try {
-                final StoreQueryParameters<ReadOnlyKeyValueStore<Integer, Aggregation>> parameters =
-                        StoreQueryParameters.fromNameAndType(
-                                TopologyProducer.WEATHER_STATIONS_STORE, QueryableStoreTypes.keyValueStore());
-                return streams.store(parameters);
-            } catch (InvalidStateStoreException e) {
-                // ignore, store not ready yet
-            }
-        }
+  private ReadOnlyKeyValueStore<Integer, Aggregation> getWeatherStationStore() {
+    while (true) {
+      try {
+        final StoreQueryParameters<ReadOnlyKeyValueStore<Integer, Aggregation>> parameters =
+                StoreQueryParameters.fromNameAndType(
+                        TopologyProducer.WEATHER_STATIONS_STORE, QueryableStoreTypes.keyValueStore());
+        return streams.store(parameters);
+      } catch (InvalidStateStoreException e) {
+        // ignore, store not ready yet
+      }
     }
+  }
 }

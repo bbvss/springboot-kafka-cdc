@@ -2,7 +2,6 @@
 CREATE DATABASE testDB;
 GO
 USE testDB;
-EXEC sys.sp_cdc_enable_db;
 -- Create and populate our products using a single insert with many rows
 CREATE TABLE products
 (
@@ -11,8 +10,6 @@ CREATE TABLE products
     description VARCHAR(512),
     weight      FLOAT
 );
-EXEC sys.sp_cdc_enable_table @source_schema = 'dbo', @source_name = 'products', @role_name = NULL,
-     @supports_net_changes = 0;
 -- Create and populate the products on hand using multiple inserts
 CREATE TABLE products_on_hand
 (
@@ -20,8 +17,6 @@ CREATE TABLE products_on_hand
     quantity   INTEGER NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products (id)
 );
-EXEC sys.sp_cdc_enable_table @source_schema = 'dbo', @source_name = 'products_on_hand', @role_name = NULL,
-     @supports_net_changes = 0;
 -- Create some customers ...
 CREATE TABLE customers
 (
@@ -31,8 +26,6 @@ CREATE TABLE customers
     last_name  VARCHAR(255)              NOT NULL,
     email      VARCHAR(255)              NOT NULL
 );
-EXEC sys.sp_cdc_enable_table @source_schema = 'dbo', @source_name = 'customers', @role_name = NULL,
-     @supports_net_changes = 0;
 -- Create some very simple orders
 CREATE TABLE orders
 (
@@ -44,6 +37,4 @@ CREATE TABLE orders
     FOREIGN KEY (purchaser) REFERENCES customers (id),
     FOREIGN KEY (product_id) REFERENCES products (id)
 );
-EXEC sys.sp_cdc_enable_table @source_schema = 'dbo', @source_name = 'orders', @role_name = NULL,
-     @supports_net_changes = 0;
 GO
