@@ -12,11 +12,11 @@ cat kafka-streams-cdc/sqlserver/insert.sql | docker exec -i sqlserver bash -c '/
 // register connector
 curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @kafka-streams-cdc/sqlserver/register-connector.json
 
-// optional: create topics: server1.dbo.customers if necessary for the stream
-docker-compose exec kafka kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1o --topic server1.dbo.customers
-
 // start KafkaApplication
 ....
+
+// postman for crud
+
 
 // browser insert customer
 http://localhost:8080/customers/insert?count=1
@@ -48,3 +48,6 @@ sh kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning 
 
 not working:
 //docker-compose exec kafka "/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --from-beginning --property print.key=true --topic server1.dbo.customers"
+
+// optional: create topics: server1.dbo.customers if necessary for the stream
+docker-compose exec kafka kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1o --topic server1.dbo.customers
